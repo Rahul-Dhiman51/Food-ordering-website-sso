@@ -1,7 +1,6 @@
 import passport from 'passport';
 import dotenv from 'dotenv';
 import { Strategy as SamlStrategy } from '@node-saml/passport-saml';
-import fs from 'fs';
 
 dotenv.config();
 
