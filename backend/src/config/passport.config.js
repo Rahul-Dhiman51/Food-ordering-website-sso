@@ -6,13 +6,14 @@ dotenv.config();
 
 const savedUsers = [];
 
+// Configuring passport with SAML strategy
 passport.use(
     new SamlStrategy(
         {
-            callbackUrl: "http://localhost:3000/login/callback",
+            callbackUrl: process.env.OKTA_RECIPIENT,
             entryPoint: process.env.OKTA_ENTRY_POINT,
             issuer: process.env.OKTA_ISSUER_URI,
-            idpCert: process.env.OKTA_CERT, // Ensure this is set correctly
+            idpCert: process.env.OKTA_CERT,
         },
         function (profile, done) {
             console.log("Profile:", profile);
@@ -34,10 +35,12 @@ passport.use(
     )
 );
 
+// Serialize and deserialize user
+
 passport.serializeUser((user, done) => {
-    const userId = user.name; // Assuming 'name' can serve as a unique identifier
+    const userId = user.name;
     console.log(`Serializing user ${userId}`);
-    done(null, userId); // Serialize using the user's unique identifier
+    done(null, userId); // Serialize using the user
 });
 
 passport.deserializeUser((userId, done) => {

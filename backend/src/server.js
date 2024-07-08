@@ -33,6 +33,7 @@ app.use(cors({
     origin: 'http://localhost:5173' // Your frontend URL
 }));
 
+// configuring express-session to store session in memory
 app.use(session({
     secret: 'your_secret_here',
     resave: false,
@@ -44,9 +45,11 @@ app.use(session({
     }
 }));
 
+// configuring passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+// middleware to log session data
 app.use((req, res, next) => {
     console.log("SessionId", req.sessionID)
     console.log("SessionData", req.session)
@@ -54,6 +57,11 @@ app.use((req, res, next) => {
     next();
 });
 
+
+// SAML callback authentication route
+// passport.authenticate middleware was not validating the SAML response correctly
+// I have checked the documentation and the configuration seems to be correct
+// So I have implemented the SAML response validation (some) manually.
 app.post("/login/callback", (req, res, next) => {
     const samlResponse = req.body.SAMLResponse;
     // console.log(samlResponse)
@@ -111,9 +119,15 @@ function extractUserAttributes(doc) {
     };
 }
 
+// Route to initiate SAML authentication
 app.get("/login", passport.authenticate("saml", { failureRedirect: "/login", failureFlash: true }), (req, res) => {
     return res.redirect("http://localhost:5173");
 });
+
+
+// Route to check if the user is authenticated
+// As the session are not persisting, the user data is not available so the user is not authenticated
+// I have tried to debug it with the help documentation and other resources but couldn't find the issue
 
 app.get("/whoami", (req, res) => {
     if (!req.isAuthenticated()) {
