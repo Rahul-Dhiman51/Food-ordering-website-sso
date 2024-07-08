@@ -80,7 +80,7 @@ function validateSAMLResponse(doc) {
     }
 
     const audience = assertion.getElementsByTagName('saml:Audience')[0];
-    if (!audience || audience.textContent !== 'urn:dev-bdxm6gz140k32t7m.us.auth0.com') {
+    if (!audience || audience.textContent !== process.env.OKTA_ISSUER_URI) {
         return false;
     }
 
@@ -90,7 +90,7 @@ function validateSAMLResponse(doc) {
     }
 
     const recipient = assertion.getElementsByTagName('saml:SubjectConfirmationData')[0].getAttribute('Recipient');
-    if (recipient !== 'http://localhost:3000/login/callback') {
+    if (recipient !== process.env.OKTA_RECIPIENT) {
         return false;
     }
     return true;
