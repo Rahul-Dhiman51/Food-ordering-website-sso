@@ -1,0 +1,23 @@
+{
+  "name": "food_ordering_website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "prebuild": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "postbuild": "cross-env OS_TYPE=$(uname) npm run moveFiles",
+    "moveFiles": "npm run moveFiles:win || npm run moveFiles:unix",
+    "moveFiles:win": "move /Y frontend/dist backend/src/public",
+    "moveFiles:unix": "mv -f frontend/dist backend/src/public"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
